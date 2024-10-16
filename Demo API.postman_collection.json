@@ -1,0 +1,235 @@
+{
+	"info": {
+		"_postman_id": "8bbc0d88-2913-4f48-866d-558c75485727",
+		"name": "Demo API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10218772",
+		"_collection_link": "https://martian-capsule-539259.postman.co/workspace/half_Million~3a0e9733-0ebd-40d0-bca6-09d68273c311/collection/10218772-8bbc0d88-2913-4f48-866d-558c75485727?action=share&source=collection_link&creator=10218772"
+	},
+	"item": [
+		{
+			"name": "login with phone & password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set('token',jsonData.data.token)\r",
+							"if(jsonData.data.sessionId){\r",
+							"    pm.collectionVariables.set('sessionId',jsonData.data.sessionId)\r",
+							"}\r",
+							"pm.test(\"Verification message\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql(\"Verification code has been sent to entered phone number.\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 2000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"isPhoneNoVerified\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.data.isPhoneNoVerified).to.eql(false);\r",
+							"});\r",
+							"pm.test(\"text\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.data.text).to.eql(\"Hello FirstName, your verification code is: 1234\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept-language",
+						"value": "ar",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"loginType\": \"PHONE_NUMBER_AND_PASSWORD\",\r\n    \"phoneCode\": \"+91\",\r\n    \"phoneNumber\": \"7000017680\",\r\n    \"password\": \"1234\",\r\n    \"deviceInfo\": {\r\n        \"deviceId\": \"RZ8T81Q01DA\",\r\n        \"language\": \"en\",\r\n        \"fcmToken\": \"FCM TOKEN\",\r\n        \"appVersion\": \"12.12\",\r\n        \"osVersion\": \"\",\r\n        \"platform\": \"android\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.halfm.sa/customers/api/v1/auth/login",
+					"protocol": "https",
+					"host": [
+						"api",
+						"halfm",
+						"sa"
+					],
+					"path": [
+						"customers",
+						"api",
+						"v1",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "resend verification code",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody)\r",
+							"pm.collectionVariables.set('sessionId',jsonData.data.sessionId)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept-language",
+						"value": "ar",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sessionId\": \"{{sessionId}}\",\r\n    \"type\": \"PHONE_NUMBER_VERIFICATION\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.halfm.sa/customers/api/v1/auth/resendCode",
+					"protocol": "https",
+					"host": [
+						"api",
+						"halfm",
+						"sa"
+					],
+					"path": [
+						"customers",
+						"api",
+						"v1",
+						"auth",
+						"resendCode"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "phone number verification",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set('token',jsonData.data.token)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept-language",
+						"value": "ar",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sessionId\": \"{{sessionId}}\",\r\n    \"code\": \"1234\",\r\n    \"type\": \"PHONE_NUMBER_VERIFICATION\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.halfm.sa/customers/api/v1/auth/verifyCode",
+					"protocol": "https",
+					"host": [
+						"api",
+						"halfm",
+						"sa"
+					],
+					"path": [
+						"customers",
+						"api",
+						"v1",
+						"auth",
+						"verifyCode"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "home",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"userId\":\"669f96bb2fa5f9cac1dcf6d5\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.halfm.sa/menus/api/v1/banners",
+					"protocol": "https",
+					"host": [
+						"api",
+						"halfm",
+						"sa"
+					],
+					"path": [
+						"menus",
+						"api",
+						"v1",
+						"banners"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "sessionId",
+			"value": ""
+		}
+	]
+}
